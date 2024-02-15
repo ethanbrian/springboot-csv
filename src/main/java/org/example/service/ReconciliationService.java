@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReconciliationService {
 
-    private static final Logger logger = Logger.getLogger(ReconciliationService.class.getName());
+    private static final Logger logger = Logger.getLogger(org.example.service.ReconciliationService.class.getName());
 
     public ReconciliationReport generateReconciliationReport(List<Record> sourceRecords, List<Record> targetRecords, List<String> columns) {
         ReconciliationReport reconciliationReport = new ReconciliationReport();
@@ -81,6 +81,7 @@ public class ReconciliationService {
         ReconciliationReport.RecordDifference difference = new ReconciliationReport.RecordDifference();
         difference.setId(sourceRecord.getId());
 
+
         for (String column : columns) {
             switch (column) {
                 case "ID":
@@ -91,11 +92,32 @@ public class ReconciliationService {
                         difference.addDifference(column, sourceRecord.getName(), targetRecord.getName());
                     }
                     break;
+                case "Date":
+                    if (!sourceRecord.getDate().equals(targetRecord.getDate())) {
+                        difference.addDifference(column, sourceRecord.getDate(), targetRecord.getDate());
+                    }
+                    break;
+                case "AvailableBalance":
+                    if (sourceRecord.getAvailableBalance() != targetRecord.getAvailableBalance()) {
+                        difference.addDifference(column, Double.toString(sourceRecord.getAvailableBalance()), Double.toString(targetRecord.getAvailableBalance()));
+                    }
+                    break;
                 // Add comparison for other specified columns...
                 default:
                     logger.warning("Unknown column: " + column);
                     break;
+                case "Charge":
+                    if (sourceRecord.getCharge() != targetRecord.getCharge()) {
+                        difference.addDifference(column, Double.toString(sourceRecord.getCharge()), Double.toString(targetRecord.getCharge()));
+                    }
+                    break;
+                case "BookBalance":
+                    if (sourceRecord.getBookBalance() != targetRecord.getBookBalance()) {
+                        difference.addDifference(column, Double.toString(sourceRecord.getBookBalance()), Double.toString(targetRecord.getBookBalance()));
+                    }
+                    break;
             }
+
         }
         return difference;
     }
